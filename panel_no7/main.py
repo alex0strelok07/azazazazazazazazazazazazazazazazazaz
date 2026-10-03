@@ -4,8 +4,9 @@ from pathlib import Path
 import os, threading, webbrowser
 
 ROOT = Path(__file__).resolve().parent
-# Дополнения игры (кухня, коридор, инвентарь, деньги). Подключаются к index.html при запуске.
-EXTRA = ['game2.js', 'game2b.js']
+# Дополнения игры. Подключаются к index.html при запуске, в этом порядке.
+# game2/game2b — кухня, коридор, инвентарь, деньги; game3/game3b — город, нападения, взаимодействия.
+EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js']
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
