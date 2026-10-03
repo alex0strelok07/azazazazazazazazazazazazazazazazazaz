@@ -6,7 +6,11 @@ import os, threading, webbrowser
 ROOT = Path(__file__).resolve().parent
 # Дополнения игры. Подключаются к index.html при запуске, в этом порядке.
 # game2/game2b — кухня, коридор, инвентарь, деньги; game3/game3b — город, нападения, взаимодействия.
-EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js']
+# game4* — единый стиль сцен, чибики NPC, иллюстрации действий и нападений, отображение персонажей,
+# отношения/квесты/журнал/сохранение, новые локации и случайные события.
+EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
+         'game4.js', 'game4i.js', 'game4a.js', 'game4s.js', 'game4b.js',
+         'game4c.js', 'game4c2.js', 'game4d.js', 'game4d2.js', 'game4d3.js']
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
