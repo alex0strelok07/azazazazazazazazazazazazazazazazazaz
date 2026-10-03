@@ -4,9 +4,28 @@ from pathlib import Path
 import os, threading, webbrowser
 
 ROOT = Path(__file__).resolve().parent
+# Дополнения игры (кухня, коридор, инвентарь, деньги). Подключаются к index.html при запуске.
+EXTRA = ['game2.js', 'game2b.js']
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
     def log_message(self,fmt,*args): pass
+    def end_headers(self):
+        self.send_header('Cache-Control','no-store')
+        super().end_headers()
+    def do_GET(self):
+        if self.path.split('?')[0] in ('/', '/index.html'):
+            html=(ROOT/'index.html').read_text(encoding='utf-8')
+            tags=''.join(f'<script src="{n}"></script>' for n in EXTRA if (ROOT/n).exists() and n not in html)
+            html=html.replace('</body>',tags+'</body>',1) if '</body>' in html else html+tags
+            data=html.encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type','text/html; charset=utf-8')
+            self.send_header('Content-Length',str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
+        super().do_GET()
 
 if __name__ == '__main__':
     os.chdir(ROOT)
