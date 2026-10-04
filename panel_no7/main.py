@@ -11,11 +11,13 @@ ROOT = Path(__file__).resolve().parent
 # game5* — группа персонажей, совместное передвижение, анимации, лужа, улица без машины;
 # game5b/game5c — диалоги в стиле референса (крупные персонажи, эмоции, подсветка говорящего);
 # game5e/game5e2 — единый живописный стиль всех персонажей, 15 эмоций, смена выражения, PNG из chars/;
-# game5d — раздельные и совместные взаимодействия, анимации реакций, предметы и характер NPC.
+# game5d — раздельные и совместные взаимодействия, анимации реакций, предметы и характер NPC;
+# game5f/game5f2 — память NPC (разговоры, помощь, отказы, предметы, квесты) и живые случайные события.
 EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
          'game4.js', 'game4i.js', 'game4a.js', 'game4s.js', 'game4b.js',
          'game4c.js', 'game4c2.js', 'game4d.js', 'game4d2.js', 'game4d3.js',
-         'game5.js', 'game5b.js', 'game5e.js', 'game5e2.js', 'game5c.js', 'game5d.js']
+         'game5.js', 'game5b.js', 'game5e.js', 'game5e2.js', 'game5c.js', 'game5d.js',
+         'game5f.js', 'game5f2.js']
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
