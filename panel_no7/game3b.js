@@ -1,4 +1,5 @@
-// Панель №7 — дополнение, этап 3 (часть 2): нападения и взаимодействия персонажей.
+// Панель №7 — дополнение, этап 3 (часть 2): стычки и взаимодействия персонажей.
+// Этап 7: случайные нападения УДАЛЕНЫ. Драка запускается только из сценария: P.startFight({story:true,quest,foe,onEnd}).
 (function(){
 const P=window.P7;if(!P)return;
 const st=document.createElement('style');st.textContent=`
@@ -19,26 +20,28 @@ const st=document.createElement('style');st.textContent=`
 .bondBtn.show{display:block}.bondBtn:hover{background:#c27a8c;color:#11130f}
 @media(max-width:700px){.bondBtn{top:242px;right:16px}}`;document.head.appendChild(st);
 const game=$('game');
-const ov=document.createElement('div');ov.className='fightPanel hidden';ov.innerHTML=`<div class='fightCard'><div class='fightTitle'>НАПАДЕНИЕ!</div><div class='fightFoe'></div><div class='fightText'></div><div class='fightBar'><div class='fightFill'></div></div><div class='fightTimer'></div><button class='fightBtn'>УДАР! (F)</button></div>`;game.appendChild(ov);
-const card=ov.querySelector('.fightCard'),foeEl=ov.querySelector('.fightFoe'),txt=ov.querySelector('.fightText'),fill=ov.querySelector('.fightFill'),tim=ov.querySelector('.fightTimer'),fbtn=ov.querySelector('.fightBtn');
-const FOES=[{n:'Гопник в спортивном костюме',t:'«Слышь, есть чё? Мелочь гони, быстро!»'},{n:'Пьяный мужик',t:'«Ты чё тут ходишь?! А ну стоять!»'},{n:'Двое подростков',t:'«Опа, кошелёчек! Делиться надо!»'},{n:'Карманник',t:'Чья-то рука тихо тянется к карману… Схвати вора!'}];
-let F=null,loop=null,result=false,resTimer=null;
+const ov=document.createElement('div');ov.className='fightPanel hidden';ov.innerHTML=`<div class='fightCard'><div class='fightTitle'>СТЫЧКА</div><div class='fightFoe'></div><div class='fightText'></div><div class='fightBar'><div class='fightFill'></div></div><div class='fightTimer'></div><button class='fightBtn'>УДАР! (F)</button></div>`;game.appendChild(ov);
+const card=ov.querySelector('.fightCard'),ttl=ov.querySelector('.fightTitle'),foeEl=ov.querySelector('.fightFoe'),txt=ov.querySelector('.fightText'),fill=ov.querySelector('.fightFill'),tim=ov.querySelector('.fightTimer'),fbtn=ov.querySelector('.fightBtn');
+// противники по умолчанию (имена используются game5i для арта); сценарий передаёт своего foe
+const FOES=[{n:'Гопник в спортивном костюме',t:'«Слышь, есть чё? Мелочь гони, быстро!»'},{n:'Пьяный мужик',t:'«Ты чё тут ходишь?! А ну стоять!»'}];
+let F=null,loop=null,result=false,resTimer=null,OPT=null;
 const G=w=>w==='zhenya'?'а':'';
-function start(){if(F||result)return;if(P.invOpen)P.toggleInv(false);const foe=FOES[Math.floor(Math.random()*FOES.length)];F={p:30,end:Date.now()+6000};P.fighting=true;foeEl.textContent=foe.n;txt.textContent=foe.t+' — быстро жми F (или кнопку), чтобы отбиться!';fbtn.style.display='';fbtn.textContent='УДАР! (F)';ov.classList.remove('hidden');loop=setInterval(tick,50);tick()}
+// запуск ТОЛЬКО сюжетный: без o.story драка не начинается
+function start(o){if(!o||!o.story)return false;if(F||result)return false;if(P.invOpen&&P.toggleInv)P.toggleInv(false);OPT=o;const foe=o.foe||FOES[0];F={p:30,end:Date.now()+(o.time||7000)};P.fighting=true;ttl.textContent=o.title||'СТЫЧКА';foeEl.textContent=foe.n;txt.textContent=foe.t+' — быстро жми F (или кнопку), чтобы отбиться!';fbtn.style.display='';fbtn.textContent='УДАР! (F)';ov.classList.remove('hidden');loop=setInterval(tick,50);tick();return true}
 P.startFight=start;
-function tick(){if(!F)return;F.p-=.6;fill.style.width=Math.max(0,F.p)+'%';const left=Math.max(0,F.end-Date.now());tim.textContent='Осталось: '+(left/1000).toFixed(1)+' с';if(F.p>=100)end(true);else if(F.p<=0||left<=0)end(false)}
-function hit(){if(!F)return;F.p=Math.min(100,F.p+7);card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');tick()}
-function end(win){clearInterval(loop);F=null;P.fighting=false;result=true;const w=P.who(),n=P.NAMES[w];let m;
-if(win){m=`${n} отбил${G(w)}сь! Нападавший удирает, спотыкаясь.`;if(Math.random()<.4){const s=50+Math.floor(Math.random()*11)*10;P.earn(s);m+=` На снегу остался оброненный кошелёк: +${s} ₽.`}}
-else{const loss=Math.min(P.S.money,100+Math.floor(Math.random()*21)*10);if(loss)P.pay(loss);m=`Не получилось… ${loss?`Отобрали ${loss} ₽.`:'Денег не было, но толкнули в сугроб.'}`;if(P.take('bandage'))m+=' Ссадину перевязали бинтом (−1 🩹).';else{P.addMin(20);m+=' Бинта нет — пришлось долго приходить в себя (+20 мин). Бинт продаётся в аптеке.'}}
+function tick(){if(!F)return;if(P.PAUSE&&P.PAUSE.on){F.end+=50;return}F.p-=.6;fill.style.width=Math.max(0,F.p)+'%';const left=Math.max(0,F.end-Date.now());tim.textContent='Осталось: '+(left/1000).toFixed(1)+' с';if(F.p>=100)end(true);else if(F.p<=0||left<=0)end(false)}
+function hit(){if(!F)return;F.p=Math.min(100,F.p+7);card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');if(P.SFX&&P.SFX.hit)P.SFX.hit();tick()}
+// итог сюжетной стычки: без случайных кошельков и потерь — последствия задаёт сценарий (onEnd)
+function end(win){clearInterval(loop);F=null;P.fighting=false;result={win};const w=P.who(),n=P.NAMES[w];let m;
+if(win)m=(OPT&&OPT.winText)||`${n} отбил${G(w)}сь! Нападавший отступает.`;
+else{m=(OPT&&OPT.loseText)||'Не получилось… Толкнули в сугроб.';if(P.take&&P.take('bandage'))m+=' Ссадину перевязали бинтом (−1 🩹).';else if(P.addMin){P.addMin(20);m+=' Бинта нет — пришлось долго приходить в себя (+20 мин).'}}
 fill.style.width=win?'100%':'0%';txt.textContent=m;tim.textContent='';fbtn.textContent='ДАЛЬШЕ (Enter)';resTimer=setTimeout(close,5000)}
-function close(){clearTimeout(resTimer);result=false;ov.classList.add('hidden')}
+function close(){clearTimeout(resTimer);const r=result;result=false;ov.classList.add('hidden');const o=OPT;OPT=null;if(o&&o.onEnd)try{o.onEnd(!!(r&&r.win))}catch(e){}}
 fbtn.addEventListener('click',e=>{e.stopPropagation();if(F)hit();else if(result)close()});
 ov.addEventListener('click',e=>e.stopPropagation());
-window.addEventListener('keydown',e=>{if(!F&&!result)return;if(F&&(e.code==='KeyF'||e.code==='Space')&&!e.repeat)hit();else if(result&&(e.code==='Enter'||e.code==='Escape'||e.code==='Space'))close();e.preventDefault();e.stopImmediatePropagation()},true);
+window.addEventListener('keydown',e=>{if(!F&&!result)return;if(F&&(e.code==='KeyF'||e.code==='Space')&&!e.repeat)hit();else if(result&&(e.code==='Enter'||e.code==='Space'))close();e.preventDefault();e.stopImmediatePropagation()},true);
 const titleOff=()=>{const t=$('title');return !t||t.classList.contains('hidden')};
-// случайные нападения при прогулке по улице
-let sig='';setInterval(()=>{if(F||result||P.invOpen||!titleOff()||!game.classList.contains('streetMap'))return;let s='';try{s=JSON.stringify(street)}catch(e){}if(s!==sig&&sig&&Math.random()<.03)start();sig=s},1000);
+// (этап 7) случайные нападения при прогулке по улице и при входе в «опасные» локации удалены.
 
 // взаимодействия Кирилла и Жени
 const ACC={kirill:'Кирилла',zhenya:'Женю'};
@@ -59,11 +62,9 @@ const _r=render;
 render=function(...a){if(id==='bondBack')id=N[P.bondReturn]?P.bondReturn:'homeExplore';const x=N[id];
 if(x.act){actor=P.who();setDyn(x,{t:ACT[x.act].t(actor,other(actor)),s:'Рассказчик'})}
 if(x.actR){const b=other(actor);setDyn(x,{t:ACT[x.actR].r[b],s:P.NAMES[b],w:b});setTimeout(()=>P.toast('💕'),60)}
-const out=_r.apply(this,a);
-if(x.danger&&!F&&!result&&Math.random()<x.danger)setTimeout(()=>{if(N[id]===x)start()},800);
-return out};
+return _r.apply(this,a)};
 const bbtn=document.createElement('button');bbtn.className='bondBtn';bbtn.textContent='💞 ВМЕСТЕ (R)';game.appendChild(bbtn);
-function near(){const x=N[id];if(!x||!x.explore||F||result||P.invOpen||!titleOff())return false;let ws;try{ws=worldState()}catch(e){return false}if(!ws||!ws.kirill||!ws.zhenya||ws.kirill.x==null)return false;if(ws.party&&ws.party!=='both')return false;return Math.hypot(ws.kirill.x-ws.zhenya.x,ws.kirill.y-ws.zhenya.y)<14}
+function near(){const x=N[id];if(!x||!x.explore||F||result||P.invOpen||!titleOff()||(P.PAUSE&&P.PAUSE.on)||(P.CUT&&P.CUT.on))return false;let ws;try{ws=worldState()}catch(e){return false}if(!ws||!ws.kirill||!ws.zhenya||ws.kirill.x==null)return false;if(ws.party&&ws.party!=='both')return false;return Math.hypot(ws.kirill.x-ws.zhenya.x,ws.kirill.y-ws.zhenya.y)<14}
 setInterval(()=>bbtn.classList.toggle('show',near()),250);
 function openBond(){if(!near())return;const x=N[id];const base={kitchen:'kitchenExplore',corridor:'corridorExplore',home:'homeExplore'};P.bondReturn=x.spawn&&base[x.map]?base[x.map]:id;BOND.forEach(k=>{N[k].room=x.room;N[k].scene=x.scene});P.go('bondMenu')}
 bbtn.addEventListener('click',e=>{e.stopPropagation();openBond()});
