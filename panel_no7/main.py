@@ -29,6 +29,12 @@ ROOT = Path(__file__).resolve().parent
 # game8a — единое игровое время (день/дата/месяц/часы/минуты/время суток), заставка нового дня,
 #          часы в интерфейсе, магазины/двор/остановка по времени, «слишком рано»/«опоздал» для сюжетных встреч;
 # game8b — журнал «Задания» (кнопка, клавиша P, пункт меню ESC), этапы ☐/☑, уведомление «НОВОЕ ЗАДАНИЕ».
+# game9a — движок дней: новый день только через сон (затемнение → 08:00 → день+1 → дата/день недели),
+#          единый календарь, утренняя заставка, задания по дням, провалы/автозавершение, состояние города, сохранение;
+# game9b/game9b2/game9b3/game9b4 — 46 заданий (24 основных, 22 дополнительных) на 8 дней,
+#          встречи по времени, решения, отношения, 5 концовок по итогам прохождения;
+# game9c — журнал АКТИВНЫЕ/ВЫПОЛНЕННЫЕ/ПРОВАЛЕННЫЕ (основные и дополнительные), отдельная кнопка «Задания»,
+#          которая автоматически встаёт так, чтобы не перекрывать «Инвентарь».
 EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
          'game4.js', 'game4i.js', 'game4a.js', 'game4s.js', 'game4b.js',
          'game4c.js', 'game4c2.js', 'game4d.js', 'game4d2.js', 'game4d3.js',
@@ -37,7 +43,8 @@ EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
          'game5h.js', 'game5h2.js', 'game5i.js',
          'game6a.js', 'game6b_ev.js', 'game6b.js',
          'game7a.js', 'game7a2.js', 'game7b.js', 'game7c.js',
-         'game8a.js', 'game8b.js']
+         'game8a.js', 'game8b.js',
+         'game9a.js', 'game9b.js', 'game9b2.js', 'game9b3.js', 'game9b4.js', 'game9c.js']
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
