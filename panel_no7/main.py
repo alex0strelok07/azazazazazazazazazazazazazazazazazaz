@@ -21,13 +21,19 @@ ROOT = Path(__file__).resolve().parent
 # game6a — экран 16+, главное меню и настройки, 3 слота сохранения, музыка (7 тем, одна за раз, плавная смена), звуки;
 # game6b_ev/game6b — в диалоге только присутствующие, двор без машины, лужа по составу группы,
 #          сюжет из 6 глав с выборами и 4 концовки, журнал (J).
+# game7a/game7a2 — CityState (0–3, только растёт), задания Quest_01–09, драки только по сюжету,
+#          меню ПАУЗА на ESC (сохранить/загрузить/настройки/главное меню), полное сохранение, без лавки на улице;
+# game7b — улица по стадиям города (мусор, повреждения, закрытые места, перекрытия, разговоры),
+#          техника по маршрутам (милиция, грузовики, БТР) со звуками;
+# game7c — финальная площадь у ДК: постановочная кат-сцена из 10 этапов, реплики по присутствию героев.
 EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
          'game4.js', 'game4i.js', 'game4a.js', 'game4s.js', 'game4b.js',
          'game4c.js', 'game4c2.js', 'game4d.js', 'game4d2.js', 'game4d3.js',
          'game5.js', 'game5b.js', 'game5e.js', 'game5e2.js', 'game5c.js', 'game5d.js',
          'game5f.js', 'game5f2.js', 'game5g.js', 'game5g2.js', 'game5g3.js',
          'game5h.js', 'game5h2.js', 'game5i.js',
-         'game6a.js', 'game6b_ev.js', 'game6b.js']
+         'game6a.js', 'game6b_ev.js', 'game6b.js',
+         'game7a.js', 'game7a2.js', 'game7b.js', 'game7c.js']
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
