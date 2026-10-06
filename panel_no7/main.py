@@ -35,6 +35,10 @@ ROOT = Path(__file__).resolve().parent
 #          встречи по времени, решения, отношения, 5 концовок по итогам прохождения;
 # game9c — журнал АКТИВНЫЕ/ВЫПОЛНЕННЫЕ/ПРОВАЛЕННЫЕ (основные и дополнительные), отдельная кнопка «Задания»,
 #          которая автоматически встаёт так, чтобы не перекрывать «Инвентарь».
+# game10a — единый календарь P7.CAL (дата/день недели/время везде из одного источника, без «ПЯТНИЦА — 5»),
+#          QuestManager с ID quest_day_NN_… и статусами LOCKED/ACTIVE/COMPLETED/FAILED/HIDDEN для HUD и журнала;
+# game10b — SceneParticipants: проверка присутствия перед каждой репликой, одиночные/совместные действия,
+#          задания с требованием присутствия, сохранение состава группы и позиций.
 EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
          'game4.js', 'game4i.js', 'game4a.js', 'game4s.js', 'game4b.js',
          'game4c.js', 'game4c2.js', 'game4d.js', 'game4d2.js', 'game4d3.js',
@@ -44,7 +48,8 @@ EXTRA = ['game2.js', 'game2b.js', 'game3.js', 'game3b.js',
          'game6a.js', 'game6b_ev.js', 'game6b.js',
          'game7a.js', 'game7a2.js', 'game7b.js', 'game7c.js',
          'game8a.js', 'game8b.js',
-         'game9a.js', 'game9b.js', 'game9b2.js', 'game9b3.js', 'game9b4.js', 'game9c.js']
+         'game9a.js', 'game9b.js', 'game9b2.js', 'game9b3.js', 'game9b4.js', 'game9c.js',
+         'game10a.js', 'game10b.js']
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(ROOT),**kwargs)
